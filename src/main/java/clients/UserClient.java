@@ -8,7 +8,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import models.LoginUserRequest;
 import models.LoginUserResponse;
-import models.User;
+import models.UserCreateRequest;
 
 import static endPoint.EndPoint.*;
 import static io.restassured.RestAssured.given;
@@ -20,9 +20,9 @@ public class UserClient {
                 .baseUri(EndPoint.BASE_URL);
     }
     @Step("Создание нового пользователя")
-    public ValidatableResponse userCreate(User user) {
+    public ValidatableResponse userCreate(UserCreateRequest userCreateRequest) {
         return requestSpecification()
-                .body(user)
+                .body(userCreateRequest)
                 .post(CREATE_USER)
                 .then();
     }
@@ -34,21 +34,21 @@ public class UserClient {
                 .then();
     }
     @Step("Изменение данных пользователя без авторизации")
-    public ValidatableResponse userEdit(User user) {
+    public ValidatableResponse userEdit(UserCreateRequest userCreateRequest) {
         return requestSpecification()
-                .body(user)
+                .body(userCreateRequest)
                 .patch(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
     @Step("Изменение данных пользователя после авторизации")
-    public ValidatableResponse userEditAfterLogin(LoginUserRequest loginUserRequest, User user) {
+    public ValidatableResponse userEditAfterLogin(LoginUserRequest loginUserRequest, UserCreateRequest userCreateRequest) {
         Response response = userLogin(loginUserRequest)
                 .extract().response();
         LoginUserResponse loginUserResponse = response.as(LoginUserResponse.class);
         String accessToken = loginUserResponse.getAccessToken();
         return requestSpecification()
                 .header("Authorization", accessToken)
-                .body(user)
+                .body(userCreateRequest)
                 .patch(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
