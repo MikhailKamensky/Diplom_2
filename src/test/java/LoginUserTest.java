@@ -15,7 +15,7 @@ public class LoginUserTest {
     public static String name = "Михаил";
 
     @Test
-    @DisplayName("Логин под существующим пользователем")
+    @DisplayName("Login existing user")
     @Description("Проверка возможности логина под существующим пользователем")
     public void userLogin() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
@@ -28,7 +28,7 @@ public class LoginUserTest {
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Логин с неверным email")
+    @DisplayName("Login with invalid email")
     @Description("Проверка не возможности логина с неверным email")
     public void userLoginWithWrongEmail() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
@@ -42,7 +42,7 @@ public class LoginUserTest {
                 .statusCode(401);
     }
     @Test
-    @DisplayName("Логин с неверным password")
+    @DisplayName("Login with invalid password")
     @Description("Проверка не возможности логина с неверным password")
     public void userLoginWithWrongPassword() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);

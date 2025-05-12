@@ -17,7 +17,7 @@ public class CreateUserTest {
     
     
     @Test
-    @DisplayName("Создание уникального пользователя")
+    @DisplayName("Create uniq user")
     @Description("Проверка возможности создать нового уникального пользователя")
     public void createNewUser() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
@@ -29,7 +29,7 @@ public class CreateUserTest {
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Создание пользователя, который уже зарегистрирован")
+    @DisplayName("Create registered user")
     @Description("Проверка не возможности создать пользователя, который уже зарегистрирован")
     public void createDuplicateUser() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
@@ -42,7 +42,7 @@ public class CreateUserTest {
                 .statusCode(403);
     }
     @Test
-    @DisplayName("Создание пользователя без поля email")
+    @DisplayName("Create user without email")
     @Description("Проверка не возможности создать пользователя без поля email")
     public void createUserWithoutEmail() {
         skipDeleteUser = true;
@@ -54,7 +54,7 @@ public class CreateUserTest {
                 .statusCode(403);
     }
     @Test
-    @DisplayName("Создание пользователя без поля password")
+    @DisplayName("Create user without password")
     @Description("Проверка не возможности создать пользователя без поля password")
     public void createUserWithoutPassword() {
         skipDeleteUser = true;
@@ -66,7 +66,7 @@ public class CreateUserTest {
                 .statusCode(403);
     }
     @Test
-    @DisplayName("Создание пользователя без поля name")
+    @DisplayName("Create user without name")
     @Description("Проверка не возможности создать пользователя без поля name")
     public void createUserWithoutName() {
         skipDeleteUser = true;

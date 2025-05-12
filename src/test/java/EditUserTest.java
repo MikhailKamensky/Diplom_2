@@ -20,14 +20,8 @@ public class EditUserTest {
     public static String newName = "Марк";
 
 
-    @After
-    public  void deleteUser() {
-        UserClient userClient = new UserClient();
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        userClient.userDeleteAfterLogin(loginUserRequest);
-    }
     @Test
-    @DisplayName("Обновление email с авторизацией")
+    @DisplayName("Update email with authorization")
     @Description("Проверка возможности обновления поля email с авторизацией")
     public void userEditEmailWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -44,7 +38,7 @@ public class EditUserTest {
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Обновление email без авторизации")
+    @DisplayName("Update email without authorization")
     @Description("Проверка не возможности обновления поля email без авторизации")
     public void userEditEmailWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -58,7 +52,7 @@ public class EditUserTest {
                 .statusCode(401);
     }
     @Test
-    @DisplayName("Обновление password с авторизацией")
+    @DisplayName("Update password with authorization")
     @Description("Проверка возможности обновления поля password с авторизацией")
     public void userEditPasswordWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -77,7 +71,7 @@ public class EditUserTest {
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Обновление password без авторизации")
+    @DisplayName("Update password without authorization")
     @Description("Проверка не возможности обновления поля password без авторизации")
     public void userEditPasswordWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -91,7 +85,7 @@ public class EditUserTest {
                 .statusCode(401);
     }
     @Test
-    @DisplayName("Обновление name с авторизацией")
+    @DisplayName("Update name with authorization")
     @Description("Проверка возможности обновления поля name с авторизацией")
     public void userEditNameWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -107,7 +101,7 @@ public class EditUserTest {
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Обновление name без авторизации")
+    @DisplayName("Update name without authorization")
     @Description("Проверка не возможности обновления поля name без авторизации")
     public void userEditNameWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
@@ -119,6 +113,13 @@ public class EditUserTest {
                 .assertThat().body("success", equalTo(false))
                 .and()
                 .statusCode(401);
+    }
+
+    @After
+    public  void deleteUser() {
+        UserClient userClient = new UserClient();
+        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
+        userClient.userDeleteAfterLogin(loginUserRequest);
     }
 
 

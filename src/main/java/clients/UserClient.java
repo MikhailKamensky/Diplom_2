@@ -19,28 +19,28 @@ public class UserClient {
                 .contentType(ContentType.JSON)
                 .baseUri(EndPoint.BASE_URL);
     }
-    @Step("Создание нового пользователя")
+    @Step("Сreate new user ")
     public ValidatableResponse userCreate(UserCreateRequest userCreateRequest) {
         return requestSpecification()
                 .body(userCreateRequest)
                 .post(CREATE_USER)
                 .then();
     }
-    @Step("Авторизация пользователя")
+    @Step("User authorization")
     public ValidatableResponse userLogin(LoginUserRequest loginUserRequest) {
         return requestSpecification()
                 .body(loginUserRequest)
                 .post(LOGIN_USER)
                 .then();
     }
-    @Step("Изменение данных пользователя без авторизации")
+    @Step("Edit user data without authorization")
     public ValidatableResponse userEdit(UserCreateRequest userCreateRequest) {
         return requestSpecification()
                 .body(userCreateRequest)
                 .patch(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
-    @Step("Изменение данных пользователя после авторизации")
+    @Step("Edit user data after authorization")
     public ValidatableResponse userEditAfterLogin(LoginUserRequest loginUserRequest, UserCreateRequest userCreateRequest) {
         Response response = userLogin(loginUserRequest)
                 .extract().response();
@@ -52,14 +52,14 @@ public class UserClient {
                 .patch(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
-    @Step("Удаление пользователя без авторизации")
+    @Step("Delete user data without authorization")
     public ValidatableResponse userDelete(String accessToken) {
         return requestSpecification()
                 .header("Authorization", accessToken)
                 .delete(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
-    @Step("Удаление пользователя после авторизации")
+    @Step("Delete user data after authorization")
     public ValidatableResponse userDeleteAfterLogin(LoginUserRequest loginUserRequest) {
         Response response = userLogin(loginUserRequest)
                 .extract().response();
