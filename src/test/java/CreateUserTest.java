@@ -10,7 +10,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 
 public class CreateUserTest {
-    public static String email = "asfd12312@yandex.ru";
+    public static String email = "asfd" + System.currentTimeMillis() + "@yandex.ru";
     public static String password = "somepass";
     public static String name = "Михаил";
     private boolean skipDeleteUser = false;

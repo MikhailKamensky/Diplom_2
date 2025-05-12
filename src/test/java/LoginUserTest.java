@@ -1,0 +1,66 @@
+import clients.UserClient;
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import models.LoginUserRequest;
+import models.UserCreateRequest;
+import org.junit.After;
+import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+
+public class LoginUserTest {
+
+    public static String email = "asfd" + System.currentTimeMillis() + "@yandex.ru";
+    public static String password = "somepass";
+    public static String name = "Михаил";
+
+    @Test
+    @DisplayName("Логин под существующим пользователем")
+    @Description("Проверка возможности логина под существующим пользователем")
+    public void userLogin() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        LoginUserRequest userLoginRequest = new LoginUserRequest(email, password);
+        UserClient userClient = new UserClient();
+        userClient.userCreate(userCreateRequest);
+        userClient.userLogin(userLoginRequest)
+                .assertThat().body("success", equalTo(true))
+                .and()
+                .statusCode(200);
+    }
+    @Test
+    @DisplayName("Логин с неверным email")
+    @Description("Проверка не возможности логина с неверным email")
+    public void userLoginWithWrongEmail() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        LoginUserRequest userWrongLoginRequest = new LoginUserRequest("wrongEmail", password);
+        LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
+        UserClient userClient = new UserClient();
+        userClient.userCreate(userCreateRequest);
+        userClient.userLogin(userWrongLoginRequest)
+                .assertThat().body("success", equalTo(false))
+                .and()
+                .statusCode(401);
+    }
+    @Test
+    @DisplayName("Логин с неверным password")
+    @Description("Проверка не возможности логина с неверным password")
+    public void userLoginWithWrongPassword() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        LoginUserRequest userWrongLoginRequest = new LoginUserRequest(email, "wrongPassword");
+        LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
+        UserClient userClient = new UserClient();
+        userClient.userCreate(userCreateRequest);
+        userClient.userLogin(userWrongLoginRequest)
+                .assertThat().body("success", equalTo(false))
+                .and()
+                .statusCode(401);
+    }
+
+    @After
+    public  void deleteUser() {
+        UserClient userClient = new UserClient();
+        LoginUserRequest userLoginRequest = new LoginUserRequest(email, password);
+        userClient.userDeleteAfterLogin(userLoginRequest);
+    }
+
+}
