@@ -55,7 +55,7 @@ public class CreateUserTest {
     }
     @Test
     @DisplayName("Create user without password")
-    @Description("Проверка не возможности создать пользователя без поля password")
+    @Description("Checking creating user without password")
     public void createUserWithoutPassword() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, null, name);
@@ -67,7 +67,7 @@ public class CreateUserTest {
     }
     @Test
     @DisplayName("Create user without name")
-    @Description("Проверка не возможности создать пользователя без поля name")
+    @Description("Checking block for creating user without password")
     public void createUserWithoutName() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, null);

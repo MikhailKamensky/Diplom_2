@@ -16,7 +16,7 @@ public class LoginUserTest {
 
     @Test
     @DisplayName("Login existing user")
-    @Description("Проверка возможности логина под существующим пользователем")
+    @Description("Check login existing user")
     public void userLogin() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest userLoginRequest = new LoginUserRequest(email, password);
@@ -29,7 +29,7 @@ public class LoginUserTest {
     }
     @Test
     @DisplayName("Login with invalid email")
-    @Description("Проверка не возможности логина с неверным email")
+    @Description("Check login with invalid email")
     public void userLoginWithWrongEmail() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest("wrongEmail", password);
@@ -43,7 +43,7 @@ public class LoginUserTest {
     }
     @Test
     @DisplayName("Login with invalid password")
-    @Description("Проверка не возможности логина с неверным password")
+    @Description("Check login with invalid password")
     public void userLoginWithWrongPassword() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest(email, "wrongPassword");

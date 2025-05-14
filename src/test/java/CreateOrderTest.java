@@ -34,7 +34,7 @@ public class CreateOrderTest {
     }
     @Test
     @DisplayName("Create new order after authorization")
-    @Description("Проверка возможности создания заказа после авторизации")
+    @Description("Checking creating order after authorization")
     public void orderCreateWithAuthorization() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
@@ -52,7 +52,7 @@ public class CreateOrderTest {
     }
     @Test
     @DisplayName("Create new order without authorization")
-    @Description("Проверка возможности создания заказа без авторизации")
+    @Description("Checking creating order without authorization")
     public void orderCreateWithoutAuthorization() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
@@ -69,7 +69,7 @@ public class CreateOrderTest {
     }
     @Test
     @DisplayName("Create new order after authorization without ingredients")
-    @Description("Проверка не возможности создания заказа после авторизации без ингредиентов")
+    @Description("Checking creating order after authorization without ingredients")
     public void orderCreateWithAuthorizationWithoutIngredients() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
@@ -85,7 +85,7 @@ public class CreateOrderTest {
     }
     @Test
     @DisplayName("Create new order after authorization with invalid ingredient")
-    @Description("Проверка не возможности создания заказа после авторизации без ингредиентов")
+    @Description("Checking of block for creating order after authorization without ingredients")
     public void orderCreateWithAuthorizationWithWrongIngredients() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);

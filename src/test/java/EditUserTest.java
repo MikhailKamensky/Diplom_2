@@ -22,7 +22,7 @@ public class EditUserTest {
 
     @Test
     @DisplayName("Update email with authorization")
-    @Description("Проверка возможности обновления поля email с авторизацией")
+    @Description("Check updating email with authorization")
     public void userEditEmailWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(newEmail, password, name);
@@ -39,7 +39,7 @@ public class EditUserTest {
     }
     @Test
     @DisplayName("Update email without authorization")
-    @Description("Проверка не возможности обновления поля email без авторизации")
+    @Description("Check block of updating email with authorization")
     public void userEditEmailWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(newEmail, password, name);
@@ -53,7 +53,7 @@ public class EditUserTest {
     }
     @Test
     @DisplayName("Update password with authorization")
-    @Description("Проверка возможности обновления поля password с авторизацией")
+    @Description("Check updating password with authorization")
     public void userEditPasswordWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(email, newPassword, name);
@@ -72,7 +72,7 @@ public class EditUserTest {
     }
     @Test
     @DisplayName("Update password without authorization")
-    @Description("Проверка не возможности обновления поля password без авторизации")
+    @Description("Check block of updating password without authorization")
     public void userEditPasswordWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(email, newPassword, name);
@@ -86,7 +86,7 @@ public class EditUserTest {
     }
     @Test
     @DisplayName("Update name with authorization")
-    @Description("Проверка возможности обновления поля name с авторизацией")
+    @Description("Check updating name with authorization")
     public void userEditNameWithAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(email, password, newName);
@@ -102,7 +102,7 @@ public class EditUserTest {
     }
     @Test
     @DisplayName("Update name without authorization")
-    @Description("Проверка не возможности обновления поля name без авторизации")
+    @Description("Check block of updating name without authorization")
     public void userEditNameWithoutAuthorization() {
         UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
         UserCreateRequest userEditRequest = new UserCreateRequest(email, password, newName);
