@@ -6,6 +6,7 @@ import models.CreateOrderRequest;
 import models.LoginUserRequest;
 import models.UserCreateRequest;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +20,17 @@ public class CreateOrderTest {
     public static String name = "Михаил";
     public static List<String> ingredients = new ArrayList<>();
     private boolean skipDeleteUser = false;
+    private  UserCreateRequest userCreateRequest;
 
-    @After
-    public  void deleteUser() {
-        UserClient userClient = new UserClient();
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        userClient.userDeleteAfterLogin(loginUserRequest);
+    @Before
+    public void createUser() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
     }
-    @After
-    public void ingredientsClean() {
-        if (!skipDeleteUser) {
-            ingredients.clear();
-        }
-    }
+
     @Test
     @DisplayName("Create new order after authorization")
     @Description("Checking creating order after authorization")
     public void orderCreateWithAuthorization() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
@@ -44,50 +38,50 @@ public class CreateOrderTest {
         OrderClient orderClient = new OrderClient();
         userClient.userCreate(userCreateRequest);
         orderClient.orderCreateAfterLogin(loginUserRequest, createOrderRequest)
-                .assertThat().body("success", equalTo(true))
+                .assertThat().statusCode(200)
                 .and()
-                .assertThat().body("order.owner.email", equalTo(email))
+                .body("success", equalTo(true))
                 .and()
-                .statusCode(200);;
+                .assertThat().body("order.owner.email", equalTo(email));
     }
     @Test
     @DisplayName("Create new order without authorization")
     @Description("Checking creating order without authorization")
     public void orderCreateWithoutAuthorization() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
         UserClient userClient = new UserClient();
         OrderClient orderClient = new OrderClient();
         userClient.userCreate(userCreateRequest);
         orderClient.orderCreate(createOrderRequest)
-                .assertThat().body("success", equalTo(true))
+                .assertThat().statusCode(200)
                 .and()
-                .assertThat().body("order.number", isA(Integer.class))
+                .body("success", equalTo(true))
                 .and()
-                .statusCode(200);;
+                .assertThat().body("order.number", isA(Integer.class));
     }
     @Test
     @DisplayName("Create new order after authorization without ingredients")
     @Description("Checking creating order after authorization without ingredients")
     public void orderCreateWithAuthorizationWithoutIngredients() {
         skipDeleteUser = true;
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
         UserClient userClient = new UserClient();
         OrderClient orderClient = new OrderClient();
         userClient.userCreate(userCreateRequest);
         orderClient.orderCreateAfterLogin(loginUserRequest, createOrderRequest)
-                .assertThat().body("success", equalTo(false))
+                .assertThat()
+                .statusCode(400)
                 .and()
-                .statusCode(400);;
+                .body("success", equalTo(false))
+                .and()
+                .body("message", equalTo("Ingredient ids must be provided"));
     }
     @Test
     @DisplayName("Create new order after authorization with invalid ingredient")
     @Description("Checking of block for creating order after authorization without ingredients")
     public void orderCreateWithAuthorizationWithWrongIngredients() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         ingredients.add("wrongIngredients");
@@ -97,6 +91,16 @@ public class CreateOrderTest {
         userClient.userCreate(userCreateRequest);
         orderClient.orderCreateAfterLogin(loginUserRequest, createOrderRequest)
                 .assertThat().statusCode(500);
+    }
+
+    @After
+    public void cleanUp() {
+        UserClient userClient = new UserClient();
+        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
+        userClient.userDeleteAfterLogin(loginUserRequest);
+        if (!skipDeleteUser) {
+            ingredients.clear();
+        }
     }
 
 }

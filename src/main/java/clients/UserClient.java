@@ -1,6 +1,6 @@
 package clients;
 
-import endPoint.EndPoint;
+import endpoint.EndPoint;
 import io.qameta.allure.Step;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -10,7 +10,7 @@ import models.LoginUserRequest;
 import models.LoginUserResponse;
 import models.UserCreateRequest;
 
-import static endPoint.EndPoint.*;
+import static endpoint.EndPoint.*;
 import static io.restassured.RestAssured.given;
 
 public class UserClient {
@@ -67,5 +67,4 @@ public class UserClient {
         String accessToken = userLoginResponse.getAccessToken();
         return userDelete(accessToken);
     }
-
 }

@@ -18,40 +18,44 @@ public class CreateUserTest {
     
     @Test
     @DisplayName("Create uniq user")
-    @Description("Проверка возможности создать нового уникального пользователя")
+    @Description("Checking creating new user")
     public void createNewUser() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest)
-                .assertThat().body("success", equalTo(true))
+                .assertThat().statusCode(200)
                 .and()
-                .statusCode(200);
+                .body("success", equalTo(true));
     }
     @Test
     @DisplayName("Create registered user")
-    @Description("Проверка не возможности создать пользователя, который уже зарегистрирован")
+    @Description("Checking creating already existing user")
     public void createDuplicateUser() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest);
         userClient.userCreate(userCreateRequest)
-                .assertThat().body("success", equalTo(false))
+                .assertThat().statusCode(403)
                 .and()
-                .statusCode(403);
+                .body("success", equalTo(false))
+                .and()
+                .body("message", equalTo("User already exists"));
     }
     @Test
     @DisplayName("Create user without email")
-    @Description("Проверка не возможности создать пользователя без поля email")
+    @Description("Checking creating user without email")
     public void createUserWithoutEmail() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(null, password, name);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest)
-                .assertThat().body("success", equalTo(false))
+                .assertThat().statusCode(403)
                 .and()
-                .statusCode(403);
+                .body("success", equalTo(false))
+                .and()
+                .body("message", equalTo("Email, password and name are required fields"));
     }
     @Test
     @DisplayName("Create user without password")
@@ -61,21 +65,26 @@ public class CreateUserTest {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, null, name);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest)
-                .assertThat().body("success", equalTo(false))
+                .assertThat().statusCode(403)
                 .and()
-                .statusCode(403);
+                .body("success", equalTo(false))
+                .and()
+                .body("message", equalTo("Email, password and name are required fields"));
+
     }
     @Test
     @DisplayName("Create user without name")
-    @Description("Checking block for creating user without password")
+    @Description("Checking block for creating user without name")
     public void createUserWithoutName() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, null);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest)
-                .assertThat().body("success", equalTo(false))
+                .assertThat().statusCode(403)
                 .and()
-                .statusCode(403);
+                .body("success", equalTo(false))
+                .and()
+                .body("message", equalTo("Email, password and name are required fields"));
     }
 
     @After

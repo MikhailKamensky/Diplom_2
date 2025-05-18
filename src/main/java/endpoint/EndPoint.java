@@ -1,4 +1,4 @@
-package endPoint;
+package endpoint;
 
 public class EndPoint {
     public static String BASE_URL = "https://stellarburgers.nomoreparties.site/";

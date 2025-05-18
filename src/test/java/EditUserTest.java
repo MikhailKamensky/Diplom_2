@@ -121,6 +121,4 @@ public class EditUserTest {
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         userClient.userDeleteAfterLogin(loginUserRequest);
     }
-
-
 }

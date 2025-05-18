@@ -8,7 +8,7 @@ import models.LoginUserRequest;
 import models.LoginUserResponse;
 
 import static clients.UserClient.requestSpecification;
-import static endPoint.EndPoint.*;
+import static endpoint.EndPoint.*;
 
 
 public class OrderClient {
@@ -51,6 +51,4 @@ public class OrderClient {
                 .get(GET_USER_ORDERS)
                 .then();
     }
-
-
 }
