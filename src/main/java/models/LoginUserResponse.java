@@ -5,12 +5,14 @@ public class LoginUserResponse {
     private String accessToken;
     private String refreshToken;
     private User user;
+    private String message;
 
-    public LoginUserResponse(boolean success, String accessToken, String refreshToken, User user) {
+    public LoginUserResponse(boolean success, String accessToken, String refreshToken, User user, String message) {
         this.success = success;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.user = user;
+        this.message = message;
     }
     public LoginUserResponse() {}
 
@@ -39,5 +41,13 @@ public class LoginUserResponse {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

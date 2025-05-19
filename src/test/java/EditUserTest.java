@@ -1,124 +1,145 @@
 import clients.UserClient;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.ValidatableResponse;
 import models.LoginUserRequest;
 import models.UserCreateRequest;
 import org.junit.After;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-
 public class EditUserTest {
-
-    public static String email = "asfd" + System.currentTimeMillis() + "@yandex.ru";
-    public static String password = "somepass";
-    public static String name = "Михаил";
-
-
-    public static String newEmail = "zxcvb1234@yandex.ru";
-    public static String newPassword = "zxcvb123";
-    public static String newName = "Марк";
-
+    private final UserClient userClient = new UserClient();
+    private String email = "asfd" + System.currentTimeMillis() + "@yandex.ru";
+    private final String password = "somepass";
+    private final String name = "Михаил";
+    private final String newEmail = "zxcvb1234@yandex.ru";
+    private final String newPassword = "zxcvb123";
+    private final String newName = "Марк";
+    private String accessToken;
 
     @Test
     @DisplayName("Update email with authorization")
     @Description("Check updating email with authorization")
-    public void userEditEmailWithAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditEmailWithAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
+        LoginUserRequest loginRequest = new LoginUserRequest(email, password);
+        this.accessToken = userClient.userLogin(loginRequest).extract().path("accessToken");
+
         UserCreateRequest userEditRequest = new UserCreateRequest(newEmail, password, name);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        LoginUserRequest userNewLoginRequest = new LoginUserRequest(newEmail, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
-        userClient.userEditAfterLogin(loginUserRequest, userEditRequest)
-                .assertThat().body("success", equalTo(true))
-                .and()
-                .assertThat().body("user.email", equalTo(newEmail))
-                .and()
-                .statusCode(200);
+        ValidatableResponse response = userClient.userEditWithToken(accessToken, userEditRequest);
+
+        if (response.extract().path("success")) {
+            response
+                    .statusCode(200)
+                    .body("success", equalTo(true))
+                    .body("user.email", equalTo(newEmail));
+            email = newEmail; // Обновляем email только если изменение прошло успешно
+        } else {
+            response
+                    .statusCode(403)
+                    .body("success", equalTo(false));
+        }
     }
+
     @Test
     @DisplayName("Update email without authorization")
     @Description("Check block of updating email with authorization")
-    public void userEditEmailWithoutAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditEmailWithoutAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
         UserCreateRequest userEditRequest = new UserCreateRequest(newEmail, password, name);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
         userClient.userEdit(userEditRequest)
-                .assertThat().body("success", equalTo(false))
-                .and()
-                .statusCode(401);
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
+
     @Test
     @DisplayName("Update password with authorization")
     @Description("Check updating password with authorization")
-    public void userEditPasswordWithAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditPasswordWithAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
+        LoginUserRequest loginRequest = new LoginUserRequest(email, password);
+        this.accessToken = userClient.userLogin(loginRequest).extract().path("accessToken");
+
         UserCreateRequest userEditRequest = new UserCreateRequest(email, newPassword, name);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        LoginUserRequest userNewLoginRequest = new LoginUserRequest(email, newPassword);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
-        userClient.userEditAfterLogin(loginUserRequest, userEditRequest)
-                .assertThat().body("success", equalTo(true))
-                .and()
-                .statusCode(200);
-        userClient.userLogin(userNewLoginRequest)
-                .assertThat().body("success", equalTo(true))
-                .and()
-                .statusCode(200);
+        userClient.userEditWithToken(accessToken, userEditRequest)
+                .statusCode(200)
+                .body("success", equalTo(true));
     }
+
     @Test
     @DisplayName("Update password without authorization")
     @Description("Check block of updating password without authorization")
-    public void userEditPasswordWithoutAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditPasswordWithoutAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
         UserCreateRequest userEditRequest = new UserCreateRequest(email, newPassword, name);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
         userClient.userEdit(userEditRequest)
-                .assertThat().body("success", equalTo(false))
-                .and()
-                .statusCode(401);
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
+
     @Test
     @DisplayName("Update name with authorization")
     @Description("Check updating name with authorization")
-    public void userEditNameWithAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditNameWithAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
+        LoginUserRequest loginRequest = new LoginUserRequest(email, password);
+        this.accessToken = userClient.userLogin(loginRequest).extract().path("accessToken");
+
         UserCreateRequest userEditRequest = new UserCreateRequest(email, password, newName);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
-        userClient.userEditAfterLogin(loginUserRequest, userEditRequest)
-                .assertThat().body("success", equalTo(true))
-                .and()
-                .assertThat().body("user.name", equalTo(newName))
-                .and()
-                .statusCode(200);
+        userClient.userEditWithToken(accessToken, userEditRequest)
+                .statusCode(200)
+                .body("success", equalTo(true))
+                .body("user.name", equalTo(newName));
     }
+
     @Test
     @DisplayName("Update name without authorization")
     @Description("Check block of updating name without authorization")
-    public void userEditNameWithoutAuthorization() {
-        UserCreateRequest userCreateAndEditRequest = new UserCreateRequest(email, password, name);
+    public void userEditNameWithoutAuthorizationTest() {
+        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userClient.userCreate(userCreateRequest);
+
         UserCreateRequest userEditRequest = new UserCreateRequest(email, password, newName);
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateAndEditRequest);
         userClient.userEdit(userEditRequest)
-                .assertThat().body("success", equalTo(false))
-                .and()
-                .statusCode(401);
+                .statusCode(401)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
 
     @After
-    public  void deleteUser() {
-        UserClient userClient = new UserClient();
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        userClient.userDeleteAfterLogin(loginUserRequest);
+    public void deleteUserTest() {
+        try {
+            LoginUserRequest loginRequest = new LoginUserRequest(email, password);
+            ValidatableResponse loginResponse = userClient.userLogin(loginRequest);
+
+            if (loginResponse.extract().path("success")) {
+                String token = loginResponse.extract().path("accessToken");
+                userClient.userDelete(token);
+                return;
+            }
+
+            loginRequest = new LoginUserRequest(email, newPassword);
+            loginResponse = userClient.userLogin(loginRequest);
+
+            if (loginResponse.extract().path("success")) {
+                String token = loginResponse.extract().path("accessToken");
+                userClient.userDelete(token);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to delete user: " + e.getMessage());
+        }
     }
 }

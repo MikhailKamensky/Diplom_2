@@ -42,16 +42,26 @@ public class UserClient {
     }
     @Step("Edit user data after authorization")
     public ValidatableResponse userEditAfterLogin(LoginUserRequest loginUserRequest, UserCreateRequest userCreateRequest) {
-        Response response = userLogin(loginUserRequest)
-                .extract().response();
-        LoginUserResponse loginUserResponse = response.as(LoginUserResponse.class);
-        String accessToken = loginUserResponse.getAccessToken();
+        ValidatableResponse loginResponse = userLogin(loginUserRequest);
+        String accessToken = loginResponse.extract().path("accessToken");
+
+        if (accessToken == null) {
+            throw new IllegalStateException("Authorization failed, no access token received. Response: " +
+                    loginResponse.extract().asString());
+        }
+
+        return userEditWithToken(accessToken, userCreateRequest);
+    }
+
+    @Step("Edit user data with token")
+    public ValidatableResponse userEditWithToken(String accessToken, UserCreateRequest userCreateRequest) {
         return requestSpecification()
                 .header("Authorization", accessToken)
                 .body(userCreateRequest)
                 .patch(GET_OR_UPDATE_USER_DATA)
                 .then();
     }
+
     @Step("Delete user data without authorization")
     public ValidatableResponse userDelete(String accessToken) {
         return requestSpecification()
@@ -61,10 +71,14 @@ public class UserClient {
     }
     @Step("Delete user data after authorization")
     public ValidatableResponse userDeleteAfterLogin(LoginUserRequest loginUserRequest) {
-        Response response = userLogin(loginUserRequest)
-                .extract().response();
-        LoginUserResponse userLoginResponse = response.as(LoginUserResponse.class);
-        String accessToken = userLoginResponse.getAccessToken();
+        ValidatableResponse loginResponse = userLogin(loginUserRequest);
+        String accessToken = loginResponse.extract().path("accessToken");
+
+        if (accessToken == null) {
+            throw new IllegalStateException("Authorization failed, no access token received. Response: " +
+                    loginResponse.extract().asString());
+        }
+
         return userDelete(accessToken);
     }
 }

@@ -4,6 +4,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import models.CreateOrderRequest;
 import models.LoginUserRequest;
+import models.LoginUserResponse;
 import models.UserCreateRequest;
 import org.junit.After;
 import org.junit.Before;
@@ -21,16 +22,25 @@ public class CreateOrderTest {
     public static List<String> ingredients = new ArrayList<>();
     private boolean skipDeleteUser = false;
     private  UserCreateRequest userCreateRequest;
+    private String accessToken;
 
     @Before
     public void createUser() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        userCreateRequest = new UserCreateRequest(email, password, name);
+        UserClient userClient = new UserClient();
+        userClient.userCreate(userCreateRequest);
+
+        // Login and store the access token
+        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
+        LoginUserResponse loginResponse = userClient.userLogin(loginUserRequest)
+                .extract().as(LoginUserResponse.class);
+        this.accessToken = loginResponse.getAccessToken();
     }
 
     @Test
     @DisplayName("Create new order after authorization")
     @Description("Checking creating order after authorization")
-    public void orderCreateWithAuthorization() {
+    public void orderCreateWithAuthorizationTest() {
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
@@ -47,7 +57,7 @@ public class CreateOrderTest {
     @Test
     @DisplayName("Create new order without authorization")
     @Description("Checking creating order without authorization")
-    public void orderCreateWithoutAuthorization() {
+    public void orderCreateWithoutAuthorizationTest() {
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
         UserClient userClient = new UserClient();
@@ -63,7 +73,7 @@ public class CreateOrderTest {
     @Test
     @DisplayName("Create new order after authorization without ingredients")
     @Description("Checking creating order after authorization without ingredients")
-    public void orderCreateWithAuthorizationWithoutIngredients() {
+    public void orderCreateWithAuthorizationWithoutIngredientsTest() {
         skipDeleteUser = true;
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         CreateOrderRequest createOrderRequest = new CreateOrderRequest(ingredients);
@@ -81,7 +91,7 @@ public class CreateOrderTest {
     @Test
     @DisplayName("Create new order after authorization with invalid ingredient")
     @Description("Checking of block for creating order after authorization without ingredients")
-    public void orderCreateWithAuthorizationWithWrongIngredients() {
+    public void orderCreateWithAuthorizationWithWrongIngredientsTest() {
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         ingredients.add("61c0c5a71d1f82001bdaaa6d");
         ingredients.add("wrongIngredients");
@@ -95,12 +105,12 @@ public class CreateOrderTest {
 
     @After
     public void cleanUp() {
-        UserClient userClient = new UserClient();
-        LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
-        userClient.userDeleteAfterLogin(loginUserRequest);
-        if (!skipDeleteUser) {
-            ingredients.clear();
+        if (!skipDeleteUser && accessToken != null) {
+            UserClient userClient = new UserClient();
+            userClient.userDelete(accessToken);
         }
+        ingredients.clear();
+
     }
 
 }

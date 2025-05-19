@@ -19,7 +19,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Create uniq user")
     @Description("Checking creating new user")
-    public void createNewUser() {
+    public void createNewUserTest() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
@@ -31,7 +31,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Create registered user")
     @Description("Checking creating already existing user")
-    public void createDuplicateUser() {
+    public void createDuplicateUserTest() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         LoginUserRequest loginUserRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
@@ -46,7 +46,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Create user without email")
     @Description("Checking creating user without email")
-    public void createUserWithoutEmail() {
+    public void createUserWithoutEmailTest() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(null, password, name);
         UserClient userClient = new UserClient();
@@ -60,7 +60,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Create user without password")
     @Description("Checking creating user without password")
-    public void createUserWithoutPassword() {
+    public void createUserWithoutPasswordTest() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, null, name);
         UserClient userClient = new UserClient();
@@ -75,7 +75,7 @@ public class CreateUserTest {
     @Test
     @DisplayName("Create user without name")
     @Description("Checking block for creating user without name")
-    public void createUserWithoutName() {
+    public void createUserWithoutNameTest() {
         skipDeleteUser = true;
         UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, null);
         UserClient userClient = new UserClient();

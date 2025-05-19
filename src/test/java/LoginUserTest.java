@@ -18,13 +18,13 @@ public class LoginUserTest {
 
     @Before
     public void createUser() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
+        this.userCreateRequest = new UserCreateRequest(email, password, name);
     }
 
     @Test
     @DisplayName("Login existing user")
     @Description("Check login existing user")
-    public void userLogin() {
+    public void userLoginTest() {
         LoginUserRequest userLoginRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
         userClient.userCreate(userCreateRequest);
@@ -36,7 +36,7 @@ public class LoginUserTest {
     @Test
     @DisplayName("Login with invalid email")
     @Description("Check login with invalid email")
-    public void userLoginWithWrongEmail() {
+    public void userLoginWithWrongEmailTest() {
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest("wrongEmail", password);
         LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
@@ -51,7 +51,7 @@ public class LoginUserTest {
     @Test
     @DisplayName("Login with invalid password")
     @Description("Check login with invalid password")
-    public void userLoginWithWrongPassword() {
+    public void userLoginWithWrongPasswordTest() {
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest(email, "wrongPassword");
         LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
         UserClient userClient = new UserClient();
