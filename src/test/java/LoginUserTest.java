@@ -15,10 +15,14 @@ public class LoginUserTest {
     public static String password = "somepass";
     public static String name = "Михаил";
     private UserCreateRequest userCreateRequest;
+    private UserClient userClient;
 
     @Before
     public void createUser() {
         this.userCreateRequest = new UserCreateRequest(email, password, name);
+        this.userClient = new UserClient();
+        userClient.userCreate(userCreateRequest);
+
     }
 
     @Test
@@ -26,8 +30,6 @@ public class LoginUserTest {
     @Description("Check login existing user")
     public void userLoginTest() {
         LoginUserRequest userLoginRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateRequest);
         userClient.userLogin(userLoginRequest)
                 .assertThat().statusCode(200)
                 .and()
@@ -39,8 +41,6 @@ public class LoginUserTest {
     public void userLoginWithWrongEmailTest() {
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest("wrongEmail", password);
         LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateRequest);
         userClient.userLogin(userWrongLoginRequest)
                 .assertThat().statusCode(401)
                 .and()
@@ -54,8 +54,6 @@ public class LoginUserTest {
     public void userLoginWithWrongPasswordTest() {
         LoginUserRequest userWrongLoginRequest = new LoginUserRequest(email, "wrongPassword");
         LoginUserRequest userRightLoginRequest = new LoginUserRequest(email, password);
-        UserClient userClient = new UserClient();
-        userClient.userCreate(userCreateRequest);
         userClient.userLogin(userWrongLoginRequest)
                 .assertThat().statusCode(401)
                 .and()

@@ -5,6 +5,7 @@ import io.restassured.response.ValidatableResponse;
 import models.LoginUserRequest;
 import models.UserCreateRequest;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -17,12 +18,18 @@ public class EditUserTest {
     private final String newPassword = "zxcvb123";
     private final String newName = "Марк";
     private String accessToken;
+    private UserCreateRequest userCreateRequest;
+
+    @Before
+    public void createUser() {
+        this.userCreateRequest = new UserCreateRequest(email, password, name);
+    }
+
 
     @Test
     @DisplayName("Update email with authorization")
     @Description("Check updating email with authorization")
     public void userEditEmailWithAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         LoginUserRequest loginRequest = new LoginUserRequest(email, password);
@@ -48,7 +55,6 @@ public class EditUserTest {
     @DisplayName("Update email without authorization")
     @Description("Check block of updating email with authorization")
     public void userEditEmailWithoutAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         UserCreateRequest userEditRequest = new UserCreateRequest(newEmail, password, name);
@@ -62,7 +68,6 @@ public class EditUserTest {
     @DisplayName("Update password with authorization")
     @Description("Check updating password with authorization")
     public void userEditPasswordWithAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         LoginUserRequest loginRequest = new LoginUserRequest(email, password);
@@ -78,7 +83,6 @@ public class EditUserTest {
     @DisplayName("Update password without authorization")
     @Description("Check block of updating password without authorization")
     public void userEditPasswordWithoutAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         UserCreateRequest userEditRequest = new UserCreateRequest(email, newPassword, name);
@@ -92,7 +96,6 @@ public class EditUserTest {
     @DisplayName("Update name with authorization")
     @Description("Check updating name with authorization")
     public void userEditNameWithAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         LoginUserRequest loginRequest = new LoginUserRequest(email, password);
@@ -109,7 +112,6 @@ public class EditUserTest {
     @DisplayName("Update name without authorization")
     @Description("Check block of updating name without authorization")
     public void userEditNameWithoutAuthorizationTest() {
-        UserCreateRequest userCreateRequest = new UserCreateRequest(email, password, name);
         userClient.userCreate(userCreateRequest);
 
         UserCreateRequest userEditRequest = new UserCreateRequest(email, password, newName);
